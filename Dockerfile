@@ -19,7 +19,7 @@ RUN make setup
 
 RUN make build
 
-# run module in official redis
+# Run module in official Redis
 FROM redis:${REDIS_VER}
 WORKDIR /data
 
