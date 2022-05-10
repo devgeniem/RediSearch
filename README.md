@@ -1,9 +1,6 @@
-# RedisJSON arm64
-Unofficial rebuild of [RedisJSON](https://github.com/RedisJSON/RedisJSON) for Docker arm64.
+# RediSearch arm64
+Unofficial rebuild of [RediSearch](https://github.com/RediSearch/RediSearch) for Docker arm64.
 
-Multi stage build:
-- Official [ReJSON](https://github.com/RedisJSON/RedisJSON) cloned from release tag.
-- Into official [Rust](https://hub.docker.com/_/rust) container to build from source.
-- Official [Redis](https://hub.docker.com/_/redis) container to load the module at start.
+`Dockerfile` builds the latest version of RediSearch, currently *2.4.6*.
 
-Image available at [`bbilly1/rejson`](https://hub.docker.com/r/bbilly1/rejson).
+`Dockerfile-1.6.15` builds version 1.6.15, for which the RediSearch module is pre-built in the `build-1.6.15` directory.

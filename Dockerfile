@@ -1,29 +1,30 @@
-# build RedisJSON with rust
-
-ARG REDIS_VER
-ARG REJSON_VER
-ARG RUST_VER
+ARG REDIS_VER=6.2
+ARG REDISEARCH_VER=v2.4.6
+ARG RUST_VER=1.60.0
 
 FROM rust:${RUST_VER} AS builder
 
-ARG REJSON_VER
+ARG REDISEARCH_VER
 
 RUN apt clean && apt -y update && apt -y install --no-install-recommends \
     clang && rm -rf /var/lib/apt/lists/*
 
-RUN git clone --depth 1 --branch ${REJSON_VER} https://github.com/RedisJSON/RedisJSON.git
+WORKDIR /
 
-WORKDIR RedisJSON
+RUN git clone --recursive --depth 1 --branch ${REDISEARCH_VER} https://github.com/RediSearch/RediSearch.git
 
-RUN cargo build --release
+WORKDIR /RediSearch
+
+RUN make setup
+
+RUN make build
 
 # run module in official redis
 FROM redis:${REDIS_VER}
 WORKDIR /data
 
 RUN mkdir -p /usr/lib/redis/modules
-COPY --from=builder /RedisJSON/target/release/librejson.so /usr/lib/redis/modules
+COPY --from=builder /RediSearch/bin/linux-arm64v8-release/search/redisearch.so /usr/lib/redis/modules
 
 EXPOSE 6379
-CMD ["redis-server", \
-     "--loadmodule", "/usr/lib/redis/modules/librejson.so"]
+CMD ["redis-server", "--loadmodule", "/usr/lib/redis/modules/redisearch.so"]
